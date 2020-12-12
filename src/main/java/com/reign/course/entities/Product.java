@@ -8,6 +8,9 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
@@ -25,9 +28,13 @@ public class Product implements Serializable {
 	private Double price;
 	private String imgUrl;
 	
-	// Associações
-	@Transient
-	private Set<Category> categories = new HashSet<>(); // conjunto que impede que duplique valores
+	// ASSOCIAÇÕES
+	//@Transient utilizado para que o jpa não reconheça
+	@ManyToMany
+	@JoinTable(name = "tb_product_category",
+	joinColumns = @JoinColumn(name = "product_id"),
+	inverseJoinColumns = @JoinColumn(name = "category_id")) 
+	private Set<Category> categories = new HashSet<>(); // CONJUNTO QUE IMPEDE QUE DUPLIQUE VALORES
 	
 	public Product() {}
 
