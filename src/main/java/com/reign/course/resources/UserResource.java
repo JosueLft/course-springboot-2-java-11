@@ -1,13 +1,17 @@
 package com.reign.course.resources;
 
+import java.net.URI;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.reign.course.entities.User;
 import com.reign.course.services.UserService;
@@ -16,6 +20,7 @@ import com.reign.course.services.UserService;
 // ANOTATIONS NECESSARIAS PARA IDENTIFICAR FUNCIONALIDADE DA ENTIDADE
 @RestController
 @RequestMapping(value = "/users") // utilizado para nomear o recurso, mapeando o recurso
+// CONTROLADOR REST QUE GERENCIA O CAMINHO /users
 public class UserResource {
 	
 	@Autowired
@@ -33,5 +38,13 @@ public class UserResource {
 	public ResponseEntity<User> findById(@PathVariable Long id) {
 		User obj = service.findById(id);
 		return ResponseEntity.ok().body(obj);
+	}
+	
+	// ENDPOINT DE INSERÇÃO DE USUARIOS AO BANCO DE DADOS
+	@PostMapping
+	public ResponseEntity<User> insert(@RequestBody User obj) {
+		obj = service.insert(obj);
+		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(obj.getId()).toUri();
+		return ResponseEntity.created(uri).body(obj);
 	}
 }
